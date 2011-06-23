@@ -8,12 +8,28 @@
 	padding: 10px;
 	background-color: #FFF;
 }
+
+h1:before { content: '<'; }
+h1:after  { content: '>'; }
+h1 {
+    margin-bottom: 2em;
+}
+
+h2 {
+    text-transform: uppercase;
+}
+
 #body {
 	background-color: #FFF;
 	height: 70%;
 	width: 100%;
 	text-align: center;
 }
+
+ul {
+    list-style-type: none;
+}
+
 #footer {
 	color: #000;
 	text-align: center;
