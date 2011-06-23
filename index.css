@@ -1,20 +1,20 @@
 @charset "utf-8";
 /* Stylesheet for index.html */
 
-#Header {
+#header {
 	height: 20%;
 	width: 100%;
 	text-align: center;
 	padding: 10px;
 	background-color: #FFF;
 }
-#Body {
+#body {
 	background-color: #FFF;
 	height: 70%;
 	width: 100%;
 	text-align: center;
 }
-#Footer {
+#footer {
 	color: #000;
 	text-align: center;
 	height: 10%;
