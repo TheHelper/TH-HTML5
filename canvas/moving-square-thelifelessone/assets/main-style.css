@@ -1,0 +1,39 @@
+* {
+	font-family: Arial, san-serif;
+	margin: 0px;
+	padding: 0px;
+}
+
+canvas {
+	float: left;
+	border: 5px solid black;
+}
+
+#buttons {
+	float: left;
+}
+#revert {
+	padding: 2px;
+}
+
+#start {
+	margin-right: 10px;
+	padding: 2px;
+}
+/*
+ *	This is the only way I could get the inputs to align properly.
+ *	If anyone has a better technique, please let me know.
+ */
+#formWrapper {
+	margin: 20px 0px 0px 20px;
+	width: 400px;
+	height: 200px;
+	float: left;
+	text-align: left;
+	font-size: 16.5px;
+}
+
+input {
+
+	float: right;
+}
