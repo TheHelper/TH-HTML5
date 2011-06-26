@@ -299,6 +299,7 @@ var Tournament;
         
         this.__defineSetter__('winner', function (val) {
             this._winner = val;
+            this._completed = true;
         });
         this.__defineGetter__('winner', function () {
             if (this._winner) {
