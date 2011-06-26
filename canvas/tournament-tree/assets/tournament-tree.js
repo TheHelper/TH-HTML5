@@ -32,6 +32,14 @@ var Tournament;
                 h = self.options.height;
             
             function drawPlayer(p, score, x, y) {
+                if (p && p._toLoad !== 0) {
+                    // Images haven't been loaded, draw the player later.
+                    p._whenLoaded.push(function () {
+                        drawPlayer(p, score, x, y);
+                    });
+                    return;
+                }
+                
                 if (!p) {
                     c.font = self.options.fontStyle;
                     c.fillStyle = self.options.undecidedStyle;
@@ -203,22 +211,43 @@ var Tournament;
     };
 
     Tournament.Player = function (name, flag, extraImg, prevRank) {
+        var self = this;
+        function onload() {
+            var i;
+            self._toLoad--;
+            
+            if (self._toLoad === 0) {
+                for (i = 0; i < self._whenLoaded.length; i++) {
+                    self._whenLoaded[i]();
+                }
+            }
+        }
+        
+        function makeImage(a, b) {
+            self[a] = new Image();
+            self[a].src = b;
+        };
+        
         this.name = name;
         this.prevRank = prevRank;
+        this._toLoad = 0;
+        this._whenLoaded = [];
         
         if (typeof extraImg === 'string') {
-            this.extraImg = new Image();
-            this.extraImg.src = extraImg;
+            makeImage('extraImg', extraImg);
         } else {
             this.extraImg = extraImg;
         }
         
         if (typeof flag === 'string') {
-            this.flag = new Image();
-            this.flag.src = flag;
+            makeImage('flag', flag);
         } else {
             this.flag = flag;
         }
+        
+        this._toLoad = 2;
+        this.extraImg.onload = onload;
+        this.flag.onload = onload;
     };
 
     /** Tournament.Round Object
