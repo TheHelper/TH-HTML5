@@ -1,3 +1,13 @@
+// Crockford
+if (typeof Object.create !== 'function') {
+    Object.create = function (o) {
+        function F() {}
+        F.prototype = o;
+        return new F();
+    };
+}
+// /Crockford
+
 var Tournament;
 (function () {
     Tournament = function (canvas, options) {
@@ -29,102 +39,13 @@ var Tournament;
         this.options.neutralGradientEnd =
             options.neutralGradientEnd || '#77aacc';
         
-        function drawMatch(m) {
-            var w = self.options.width,
-                h = self.options.height;
-            
-            function drawPlayer(p, score, x, y) {
-                if (p && p._toLoad !== 0) {
-                    // Images haven't been loaded, draw the player later.
-                    p._whenLoaded.push(function () {
-                        drawPlayer(p, score, x, y);
-                    });
-                    return;
-                }
-                
-                if (!p) {
-                    c.font = self.options.fontStyle;
-                    c.fillStyle = self.options.undecidedStyle;
-                    c.fillText('0', x + w - 10, y + self.options.fontSize + 1);
-                    c.fillText('Undecided', x + self.options.padding,
-                        y + self.options.fontSize + 1
-                    );
-                    c.fillStyle = self.options.fillStyle;
-                    return;
-                }
-                
-                x += 0.5;
-                y += 0.5;
-                
-                c.font = self.options.fontStyle;
-                c.fillText(score, x + w - self.options.fontSize, 
-                    y + self.options.fontSize + 1
-                );
-                
-                if (p.flag) {
-                    c.drawImage(p.flag, x, y);
-                    x += self.options.padding + p.flag.width;
-                }
-                
-                if (p.extraImg) {
-                    c.drawImage(p.extraImg, x, y + 1);
-                    x += self.options.padding + p.extraImg.width;
-                }
-                
-                x += self.options.padding;
-                c.fillText(p.name, x, y + self.options.fontSize + 1);
-            }
-            
-            c.strokeRect(m.x, m.y, w, h);
-            c.strokeRect(m.x, m.y + h, w, h);
-            
-            m.gradients = [];
-            if (m.completed) {
-                m.grads[m.winner].addColorStop(0,
-                    self.options.winGradientStart
-                );
-                m.grads[m.winner].addColorStop(1,
-                    self.options.winGradientEnd
-                );
-                
-                m.grads[+!m.winner].addColorStop(0,
-                    self.options.loseGradientStart
-                );
-                m.grads[+!m.winner].addColorStop(1,
-                    self.options.loseGradientEnd
-                );
-            } else {
-                m.grads[0].addColorStop(0,
-                    self.options.neutralGradientStart
-                );
-                m.grads[0].addColorStop(1,
-                    self.options.neutralGradientEnd
-                );
-                
-                m.grads[1].addColorStop(0,
-                    self.options.neutralGradientStart
-                );
-                m.grads[1].addColorStop(1,
-                    self.options.neutralGradientEnd
-                );
-            }
-            
-            c.fillStyle = m.grads[0];
-            c.fillRect(m.x + 1, m.y + 1, w - 2, h - 2);
-            c.fillStyle = m.grads[1];
-            c.fillRect(m.x + 1, m.y + h + 1, w - 2, h - 2);
-            
-            c.fillStyle = self.options.fillStyle;
-            drawPlayer(m.players[0], m.scores[0], m.x, m.y);
-            drawPlayer(m.players[1], m.scores[1], m.x, m.y + h);
-        }
-        
-        this.draw = function () {
+        this.draw = function (maxRound) {
             var x = 0.5,
                 y,
                 i,
                 j,
                 r,
+                o,
                 
                 lineX,
                 
@@ -137,6 +58,100 @@ var Tournament;
                 totalWidth = self.rounds.length *
                     (self.options.width + self.options.xspacing) +
                     self.options.xspacing;
+            
+            function drawMatch(m) {
+                var w = self.options.width,
+                    h = self.options.height;
+                
+                function drawPlayer(p, score, x, y) {
+                    if (p && p._toLoad !== 0) {
+                        // Images haven't been loaded, draw the player later.
+                        p._whenLoaded.push(function () {
+                            drawPlayer(p, score, x, y);
+                        });
+                        return;
+                    }
+                    
+                    if (!p) {
+                        c.font = self.options.fontStyle;
+                        c.fillStyle = self.options.undecidedStyle;
+                        c.fillText('0', x + w - 10, y + self.options.fontSize + 1);
+                        c.fillText('Undecided', x + self.options.padding,
+                            y + self.options.fontSize + 1
+                        );
+                        c.fillStyle = self.options.fillStyle;
+                        return;
+                    }
+                    
+                    x += 0.5;
+                    y += 0.5;
+                    
+                    c.font = self.options.fontStyle;
+                    c.fillText(score, x + w - self.options.fontSize, 
+                        y + self.options.fontSize + 1
+                    );
+                    
+                    if (p.flag) {
+                        c.drawImage(p.flag, x, y);
+                        x += self.options.padding + p.flag.width;
+                    }
+                    
+                    if (p.extraImg) {
+                        c.drawImage(p.extraImg, x, y + 1);
+                        x += self.options.padding + p.extraImg.width;
+                    }
+                    
+                    x += self.options.padding;
+                    c.fillText(p.name, x, y + self.options.fontSize + 1);
+                }
+                
+                c.strokeRect(m.x, m.y, w, h);
+                c.strokeRect(m.x, m.y + h, w, h);
+                
+                m.gradients = [];
+                if (m.completed) {
+                    m.grads[m.winner].addColorStop(0,
+                        self.options.winGradientStart
+                    );
+                    m.grads[m.winner].addColorStop(1,
+                        self.options.winGradientEnd
+                    );
+                    
+                    m.grads[+!m.winner].addColorStop(0,
+                        self.options.loseGradientStart
+                    );
+                    m.grads[+!m.winner].addColorStop(1,
+                        self.options.loseGradientEnd
+                    );
+                } else {
+                    m.grads[0].addColorStop(0,
+                        self.options.neutralGradientStart
+                    );
+                    m.grads[0].addColorStop(1,
+                        self.options.neutralGradientEnd
+                    );
+                    
+                    m.grads[1].addColorStop(0,
+                        self.options.neutralGradientStart
+                    );
+                    m.grads[1].addColorStop(1,
+                        self.options.neutralGradientEnd
+                    );
+                }
+                
+                c.fillStyle = m.grads[0];
+                c.fillRect(m.x + 1, m.y + 1, w - 2, h - 2);
+                c.fillStyle = m.grads[1];
+                c.fillRect(m.x + 1, m.y + h + 1, w - 2, h - 2);
+                
+                c.fillStyle = self.options.fillStyle;
+                drawPlayer(m.players[0], m.scores[0], m.x, m.y);
+                drawPlayer(m.players[1], m.scores[1], m.x, m.y + h);
+            }
+            
+            if (maxRound === undefined) {
+                maxRound = self.rounds.length;
+            }
             
             canvas.height = totalHeight;
             canvas.width = totalWidth;
@@ -175,7 +190,28 @@ var Tournament;
                         match.x, match.y + self.options.height * 2
                     );
                     
-                    drawMatch(match);
+                    // Consider maxRound.
+                    if (i >= maxRound) {
+                        // We cannot modify match directly,
+                        // as those changes would delte data needed
+                        // when all matches are to be drawn.
+                        // Therefore, we create a new object whose
+                        // prototype is match and make the new object
+                        // have the fields we want to override.
+                        // The other fields aren't found in the new
+                        // object, so they are searched for in the
+                        // prototype (i.e. the "real" object).
+                        o = Object.create(match);
+                        o.scores = [0, 0];
+                        
+                        if (i > maxRound) {
+                            o.players = [undefined, undefined];
+                        }
+                        
+                        drawMatch(o);
+                    } else {
+                        drawMatch(match);
+                    }
                     
                     // Draw connecting lines.
                     if (i !== 0) {

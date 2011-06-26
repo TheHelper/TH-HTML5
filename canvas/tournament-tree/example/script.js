@@ -65,13 +65,14 @@ var tournament;
         scores: [1, 3]
     });
     new Tournament.Match(tournament.rounds[1], {
-        scores: [2, 2]
+        scores: [3, 2]
     });
     
     new Tournament.Match(tournament.rounds[2], {
+        scores: [5, 4]
     });
     
     tournament.calculate();
     // Draw the tournament.
-    tournament.draw();
+    tournament.draw(0);
 })();
