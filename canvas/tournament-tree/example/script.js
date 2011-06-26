@@ -62,18 +62,16 @@ var tournament;
     });
     
     new Tournament.Match(tournament.rounds[1], {
-        players: [ps[0], ps[1]],
         scores: [1, 3]
     });
     new Tournament.Match(tournament.rounds[1], {
-        players: [ps[2], ps[3]],
         scores: [2, 2]
     });
     
     new Tournament.Match(tournament.rounds[2], {
-        players: [ps[1], undefined]
     });
     
+    tournament.calculate();
     // Draw the tournament.
     tournament.draw();
 })();

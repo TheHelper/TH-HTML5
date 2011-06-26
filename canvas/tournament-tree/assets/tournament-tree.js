@@ -20,12 +20,14 @@ var Tournament;
         this.options.strokeStyle = options.strokeStyle || 'black';
         this.options.fillStyle = options.fillStyle || 'black';
         this.options.undecidedStyle = options.undecidedStyle || '#333333';
-        this.options.winGradientStart = '#aaffaa';
-        this.options.winGradientEnd = '#99cc99';
-        this.options.loseGradientStart = '#ffaaaa';
-        this.options.loseGradientEnd = '#cc9999';
-        this.options.neutralGradientStart = '#aaccff';
-        this.options.neutralGradientEnd = '#77aacc';
+        this.options.winGradientStart = options.winGradientStart || '#aaffaa';
+        this.options.winGradientEnd = options.winGradientEnd || '#99cc99';
+        this.options.loseGradientStart = options.loseGradientStart || '#ffaaaa';
+        this.options.loseGradientEnd = options.loseGradientEnd || '#cc9999';
+        this.options.neutralGradientStart =
+            options.neutralGradientStart || '#aaccff';
+        this.options.neutralGradientEnd =
+            options.neutralGradientEnd || '#77aacc';
         
         function drawMatch(m) {
             var w = self.options.width,
@@ -207,6 +209,31 @@ var Tournament;
             }
             
             c.stroke();
+        };
+        
+        this.calculate = function () {
+            var l = self.rounds.length - 1,
+                i,
+                j,
+                m,
+                matches;
+            
+            for (i = 0; i < l; i++) {
+                matches = self.rounds[i].matches;
+                
+                for (j = 0; j < matches.length; j += 2) {
+                    m = self.rounds[i + 1].matches[j / 2];
+                    
+                    m.players = matches[j].completed
+                        ? [matches[j].players[matches[j].winner]]
+                        : [undefined];
+                    
+                    m.players.push(matches[j + 1].completed
+                        ? matches[j + 1].players[matches[j + 1].winner]
+                        : undefined
+                    );
+                }
+            }
         };
     };
 
