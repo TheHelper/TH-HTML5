@@ -57,7 +57,9 @@ var Tournament;
                 y += 0.5;
                 
                 c.font = self.options.fontStyle;
-                c.fillText(score, x + w - 10, y + self.options.fontSize + 1);
+                c.fillText(score, x + w - self.options.fontSize, 
+                    y + self.options.fontSize + 1
+                );
                 
                 if (p.flag) {
                     c.drawImage(p.flag, x, y);
