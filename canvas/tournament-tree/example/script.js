@@ -45,7 +45,7 @@ var tournament;
     
     // Register matches.
     new Tournament.Match(tournament.rounds[0], { 
-        players: [ps[0], ps[2]],
+        players: [ps[0], ps[1]],
         scores: [2, 0]
     });
     new Tournament.Match(tournament.rounds[0], {
