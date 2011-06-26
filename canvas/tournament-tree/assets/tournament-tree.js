@@ -202,6 +202,7 @@ var Tournament;
                         // object, so they are searched for in the
                         // prototype (i.e. the "real" object).
                         o = Object.create(match);
+                        o.completed = false;
                         o.scores = [0, 0];
                         
                         if (i > maxRound) {
