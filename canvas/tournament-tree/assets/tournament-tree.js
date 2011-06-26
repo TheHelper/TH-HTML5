@@ -193,7 +193,7 @@ var Tournament;
                     // Consider maxRound.
                     if (i >= maxRound) {
                         // We cannot modify match directly,
-                        // as those changes would delte data needed
+                        // as those changes would delete data needed
                         // when all matches are to be drawn.
                         // Therefore, we create a new object whose
                         // prototype is match and make the new object
