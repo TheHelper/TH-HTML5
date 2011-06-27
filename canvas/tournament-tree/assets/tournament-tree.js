@@ -39,6 +39,34 @@ var Tournament;
         this.options.neutralGradientEnd =
             options.neutralGradientEnd || '#77aacc';
         
+        /** <Tournament>.draw method
+         *
+         * Draws the tournament tree.
+         * 
+         ** Arguments
+         * 
+         * maxRound
+         *      The last round to be drawn completed. Defaults
+         *      to <Tournament>.rounds.length.
+         *      
+         *      For example if maxRound is 0, the first round
+         *      will be drawn, all scores being 0 and no match
+         *      completed. The other rounds will be drawn with
+         *      undefined players and scores.
+         *
+         *      If maxRound is 1, the first round is drawn
+         *      completely, meaning all matches are drawn
+         *      according to given data, scores displayed
+         *      and winner highlighted.
+         *          The second round is drawn with scores
+         *      0, but players according to given (or
+         *      calculated) data. The rest of the rounds
+         *      are drawn with undefined players and scores.
+         *
+         *      If maxRound is <Tournament>.rounds.length,
+         *      all rounds are drawn according to given and
+         *      calculated data.
+         */
         this.draw = function (maxRound) {
             var x = 0.5,
                 y,
@@ -73,6 +101,7 @@ var Tournament;
                     }
                     
                     if (!p) {
+                        // Player is undefined.
                         c.font = self.options.fontStyle;
                         c.fillStyle = self.options.undecidedStyle;
                         c.fillText('0', x + w - 10, y + self.options.fontSize + 1);
@@ -83,24 +112,29 @@ var Tournament;
                         return;
                     }
                     
+                    // http://diveintohtml5.org/canvas.html#pixel-madness
                     x += 0.5;
                     y += 0.5;
                     
                     c.font = self.options.fontStyle;
+                    // Draw score to the right.
                     c.fillText(score, x + w - self.options.fontSize, 
                         y + self.options.fontSize + 1
                     );
                     
+                    // Draw the flag.
                     if (p.flag) {
                         c.drawImage(p.flag, x, y);
                         x += self.options.padding + p.flag.width;
                     }
                     
+                    // Draw the extra image.
                     if (p.extraImg) {
                         c.drawImage(p.extraImg, x, y + 1);
                         x += self.options.padding + p.extraImg.width;
                     }
                     
+                    // Draw the player's name.
                     x += self.options.padding;
                     c.fillText(p.name, x, y + self.options.fontSize + 1);
                 }
@@ -108,8 +142,9 @@ var Tournament;
                 c.strokeRect(m.x, m.y, w, h);
                 c.strokeRect(m.x, m.y + h, w, h);
                 
-                m.gradients = [];
+                // Set gradient colors.
                 if (m.completed) {
+                    // Winner is decided, make him get the biwinning colors.
                     m.grads[m.winner].addColorStop(0,
                         self.options.winGradientStart
                     );
@@ -117,6 +152,9 @@ var Tournament;
                         self.options.winGradientEnd
                     );
                     
+                    // And the loser gets the other colors.
+                    // !m.winner gets the opposite of winner,
+                    // and + casts it to an integer.
                     m.grads[+!m.winner].addColorStop(0,
                         self.options.loseGradientStart
                     );
@@ -124,6 +162,8 @@ var Tournament;
                         self.options.loseGradientEnd
                     );
                 } else {
+                    // Winner hasn't been decided yet,
+                    // use neutral colors for both.
                     m.grads[0].addColorStop(0,
                         self.options.neutralGradientStart
                     );
@@ -139,11 +179,13 @@ var Tournament;
                     );
                 }
                 
+                // Fill the gradients.
                 c.fillStyle = m.grads[0];
                 c.fillRect(m.x + 1, m.y + 1, w - 2, h - 2);
                 c.fillStyle = m.grads[1];
                 c.fillRect(m.x + 1, m.y + h + 1, w - 2, h - 2);
                 
+                // Draw the players.
                 c.fillStyle = self.options.fillStyle;
                 drawPlayer(m.players[0], m.scores[0], m.x, m.y);
                 drawPlayer(m.players[1], m.scores[1], m.x, m.y + h);
@@ -157,7 +199,7 @@ var Tournament;
             canvas.width = totalWidth;
             
             c.font = self.options.fontStyle;
-            c.beginPath();
+            c.beginPath(); // For drawing the lines between rounds and matches.
             c.strokeStyle = self.options.strokeStyle;
             
             for (i = 0; i < self.rounds.length; i++) {
@@ -242,11 +284,12 @@ var Tournament;
                     }
                     
                     y += self.options.height * 2;
-                }
+                } // for
                 
                 x += self.options.width;
-            }
+            } // for
             
+            // Actually draw the lines.
             c.stroke();
         };
         
@@ -261,12 +304,18 @@ var Tournament;
                 matches = self.rounds[i].matches;
                 
                 for (j = 0; j < matches.length; j += 2) {
+                    // rounds[1].matches[0] gets its players
+                    // from rounds[0]'s matches[0] and matches[1].
+                    // rounds[1].matches[1] gets its players
+                    // from rounds[0]'s matches[2] and matches[3].
                     m = self.rounds[i + 1].matches[j / 2];
                     
+                    // Add first match's winner.
                     m.players = matches[j].completed
                         ? [matches[j].players[matches[j].winner]]
                         : [undefined];
                     
+                    // Add second match's winner.
                     m.players.push(matches[j + 1].completed
                         ? matches[j + 1].players[matches[j + 1].winner]
                         : undefined
@@ -278,11 +327,13 @@ var Tournament;
 
     Tournament.Player = function (name, flag, extraImg, prevRank) {
         var self = this;
+        
         function onload() {
             var i;
             self._toLoad--;
             
             if (self._toLoad === 0) {
+                // All images have been loaded.
                 for (i = 0; i < self._whenLoaded.length; i++) {
                     self._whenLoaded[i]();
                 }
@@ -389,7 +440,7 @@ var Tournament;
         this.__defineGetter__('completed', function () {
             return this._completed || 
                 (Math.max(this.scores[0], this.scores[1]) 
-                == this.round.winsRequired);
+                === this.round.winsRequired);
         });
         
         this.__defineSetter__('winner', function (val) {
@@ -405,6 +456,9 @@ var Tournament;
                 // boolean -> integer
                 return +(this.scores[0] < this.scores[1]);
             }
+            
+            // Winner hasn't been defined.
+            return undefined;
         });
     };
 })();
