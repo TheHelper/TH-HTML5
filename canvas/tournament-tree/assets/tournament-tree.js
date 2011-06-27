@@ -275,7 +275,7 @@ var Tournament;
                         c.lineTo(lineX, match.y + self.options.height);
                         
                         // Connect the horizontal lines with vertical ones.
-                        if (j % 2 == 1) {
+                        if (j % 2 === 1) {
                             c.moveTo(lineX, match.y + self.options.height);
                             c.lineTo(lineX,
                                 matches[j - 1].y + self.options.height
@@ -343,7 +343,7 @@ var Tournament;
         function makeImage(a, b) {
             self[a] = new Image();
             self[a].src = b;
-        };
+        }
         
         this.name = name;
         this.prevRank = prevRank;
@@ -461,7 +461,7 @@ var Tournament;
             return undefined;
         });
     };
-})();
+}());
 
 
 
