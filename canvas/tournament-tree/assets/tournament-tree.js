@@ -463,6 +463,3 @@ var Tournament;
     };
 }());
 
-
-
-
