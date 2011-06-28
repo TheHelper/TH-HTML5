@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+	<head>
+		<title>The Amazing Moving Square</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="assets/main-style.css" />
+	</head>
+	
+	<body>
+		<canvas width="400" height="300" id="output">
+			Sorry, your browser doesn't support HTML5 canvas.
+		</canvas>
+		
+		<span id="formWrapper">
+			Background color: <input type="text" id="bg-color" /> <br />
+			Block color: <input type="text" id="block-color" /> <br />
+			<br />
+			<span id="buttons">
+				<input type="button" value="Revert" id="revert" />
+				<input type="button" value="Start" id="start" />
+			</span>
+		</span>
+
+		<script src="../../assets/libs/modernizr.js"></script>
+		<script src="../assets/libs/requestAnimationFrame.js"></script>
+		<script src="assets/main-script.js"></script>
+
+	</body>
+</html>
