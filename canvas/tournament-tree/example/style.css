@@ -1,0 +1,17 @@
+#tree {
+    border: 1px dotted black;
+}
+
+a {
+    font-size: small;
+    font-family: sans-serif, arial;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:visited {
+    color: blue;
+}
